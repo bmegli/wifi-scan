@@ -55,11 +55,11 @@ git clone https://github.com/bmegli/wifi-scan.git
 ### Building the examples
 
 ``` bash
-gcc wifi-scan.c examples/wifi-scan-station.c -lmnl -o wifi-scan-station
+gcc wifi_scan.c examples/wifi_scan_station.c -lmnl -o wifi-scan-station
 ```
 
 ``` bash
-gcc wifi-scan.c examples/wifi-scan-all.c -lmnl -o wifi-all
+gcc wifi_scan.c examples/wifi_scan_all.c -lmnl -o wifi-scan-all
 ```
 
 ## Testing
