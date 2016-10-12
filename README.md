@@ -118,6 +118,4 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 		(bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
 
 	wifi_scan_close(wifi);
-
-	return 0;
 ```
