@@ -24,7 +24,7 @@
  * 
  */
 
-#include "wifi_scan.h"
+#include "../wifi_scan.h"
 #include <stdio.h>  //printf
 #include <unistd.h> //sleep
 
