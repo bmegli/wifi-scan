@@ -1,6 +1,6 @@
 # wifi-scan
 
-This a small C/C++ library for monitoring signal strength of WiFi networks. It can collect data from:
+This is a small C/C++ library for monitoring signal strength of WiFi networks. It can collect data from:
 
 - associated station only (rapidly)
 - all networks around (slow passive scan)
@@ -49,7 +49,7 @@ sudo apt-get install git
 ### Cloning the repository
 
 ``` bash
-git clone  
+git clone https://github.com/bmegli/wifi-scan.git
 ```
 
 ### Building the examples
