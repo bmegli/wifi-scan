@@ -20,7 +20,7 @@ extern "C" {
 
 #include <stdint.h>
 
-// some constants - mac address length, mac adress as tring length, max length of wireless network id with null character
+// some constants - mac address length, mac adress as string length, max length of wireless network id with null character
 enum wifi_constants {BSSID_LENGTH=6, BSSID_STRING_LENGTH=18, SSID_MAX_LENGTH_WITH_NULL=33};
 // anything >=0 should mean that your are associated with the station
 enum bss_status{BSS_NONE=-1, BSS_AUTHENTHICATED=0, BSS_ASSOCIATED=1, BSS_IBSS_JOINED=2};
