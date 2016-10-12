@@ -86,7 +86,10 @@ sudo ./wifi-scan-all wlan0
 ## Using
 
 See examples directory for more complete and commented examples with error handling.
+
 Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
+
+### wifi-scan-station
 
 ``` C
 	struct station_info station;    
@@ -94,18 +97,24 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 	int status;
 	
 	if (wifi_scan_station(wifi, &station) > 0 )
-		printf("%s signal %d dBm %d rx %d tx\n", station.ssid,  station.signal_dbm,station.rx_packets, station.tx_packets);
+		printf("%s signal %d dBm %d rx %d tx\n",
+		station.ssid,  station.signal_dbm,
+		station.rx_packets, station.tx_packets);
 	
 	wifi_scan_close(wifi);
 ```
 
+### wifi-scan-all
+
 ``` C
 	struct station_info station;    
 	struct wifi_scan *wifi = wifi_scan_init("wlan0");
 	int status;
 	
 	if (wifi_scan_station(wifi, &station) > 0 )
-		printf("%s signal %d dBm %d rx %d tx\n", station.ssid,  station.signal_dbm,station.rx_packets, station.tx_packets);
+		printf("%s signal %d dBm %d rx %d tx\n",
+		station.ssid,  station.signal_dbm,
+		station.rx_packets, station.tx_packets);
 	
 	wifi_scan_close(wifi);
 ```
