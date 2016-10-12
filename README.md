@@ -113,7 +113,9 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 	status=wifi_scan_all(wifi, bss, 10);
 		
 	for(i=0;i<status && i<10;++i)	
-		printf("%s signal %d dBm seen %d ms ago status %s\n", bss[i].ssid,  bss[i].signal_mbm/100, bss[i].seen_ms_ago, (bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
+		printf("%s signal %d dBm seen %d ms ago status %s\n",
+		bss[i].ssid,  bss[i].signal_mbm/100, bss[i].seen_ms_ago,
+		(bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
 
 	wifi_scan_close(wifi);
 
