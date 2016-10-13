@@ -37,7 +37,7 @@
   * 
   * prepare_nl_messsage/send_nl_message/receive_nl_message are helper functions to simplify common tasks when issuing commands
   * 
-  * validate function simplifies common validation tasks by accepting tables of attributes to validate with data types/lengths
+  * validate function simplifies common tasks (validates each attribute against table specifying what is valid)
   *
   */
  
