@@ -105,7 +105,7 @@ int wifi_scan_station(struct wifi_scan *wifi, struct station_info *station);
  * bss_infos_length - the length of passed array
  * 
  * returns:
- * -1 on error (errno is set) or the number of found BSSes, the number may be breater then bss_infos_length
+ * -1 on error (errno is set) or the number of found BSSes, the number may be greater then bss_infos_length
  * 
  * Some devices may fail with -1 and errno=EBUSY if triggering scan when another scan is in progress. You may wait and retry in that case 
  * 
