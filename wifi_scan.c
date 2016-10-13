@@ -12,6 +12,36 @@
  * GNU General Public License for more details.
  */
  
+ /*
+  * Library Overview
+  * 
+  * This library uses netlink nl80211 user-space interface to retrieve wireless device information from kernel-space. 
+  * For netlink communication libmnl is used (minimalistic user-space netlink library).
+  * 
+  * First concept you need to understand is that netlink uses sockets (yes, those sockets!)
+  * to communicate between user-space and kernel-space and in 2016 this is the way we do it.
+  * 
+  * There are 2 netlink communication channels (sockets/buffers)
+  * - for notifications (about triggers, ready scan results)
+  * - for commands (commanding triggers, retrieving scan results, station information)
+  * 
+  * wifi_scan_init initializes 2 channels, gets nl80211 id using generic netlink (genetlink), gets id of 
+  * multicast group scan and subscribes to this group notifcations using notifications channel.
+  * 
+  * wifi_scan_close frees up resources of two channels and any other resoureces that library uses.
+  * 
+  * wifi_scan_station gets the last (not necessarilly fresh) scan results that are available from the device,
+  * checks which station we are associated with and retrieves information about this station (using commands channel)
+  * 
+  * wifi_scan_all reads up any pending notifications, commands a trigger if necessary, waits for the device to gather
+  * results and finally reads scan results with get_scan function (those are fresh results)
+  * 
+  * prepare_nl_messsage/send_nl_message/receive_nl_message are helper functions to simplify common tasks when issuing commands
+  * 
+  * validate function simplifies common validation tasks by accepting tables of attributes to validate with data types/lengths
+  *
+  */
+ 
 #include "wifi_scan.h"
 
 #include <libmnl/libmnl.h> //netlink libmnl
@@ -26,71 +56,91 @@
 #include <fcntl.h> //fntnl (set descriptor options)
 #include <errno.h> //errno
 
-// Internal data structures used throughout the library
-
+// everything needed for sending/receiving with netlink
 struct netlink_channel
 {
-	struct mnl_socket *nl;
-	char *buf;
-	uint16_t nl80211_id;
-	uint32_t ifindex;
-	uint32_t sequence;
-	void *context;
+	struct mnl_socket *nl; //netlink socket
+	char *buf; //buffer for messages (in and out)
+	uint16_t nl80211_id; //generic netlink nl80211 id
+	uint32_t ifindex; //the wireless interface number (e.g. interface number for wlan0)
+	uint32_t sequence; //the sequence number of netlink message
+	void *context; //additional data to be stored/used when processing concrete message 
 };
 
+// internal library data passed around by user
 struct wifi_scan
 {
-	struct netlink_channel notification_channel;
+	struct netlink_channel notification_channel; 
 	struct netlink_channel command_channel;
 };
-
 
 // DECLARATIONS AND TOP-DOWN LIBRARY OVERVIEW
 
 // INITIALIZATION
 
+// data needed from CTRL_CMD_GETFAMILY for nl80211, nl80211 id is stored in the channel rather then here
 struct context_CTRL_CMD_GETFAMILY
 {
-	uint32_t id_NL80211_MULTICAST_GROUP_SCAN;
+	uint32_t id_NL80211_MULTICAST_GROUP_SCAN; //the id of group scan which we need to subscribe to
 };
 
+// public interface - initialize the library for wireless interface (e.g. wlan0)
 struct wifi_scan *wifi_scan_init(const char *interface); 
 
+// allocate memory, set initial values, etc.
 void init_netlink_channel(struct netlink_channel *channel, const char *interface);
+// create netlink sockets for generic netlink
 void init_netlink_socket(struct netlink_channel *channel);
 
-void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id);
-
+// execute command to get nl80211 family and process the results
 int get_family_and_scan_ids(struct netlink_channel *channel);
+// this processes kernel reply for get family request, stores family id
 int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data);
+// parses multicast groups to get scan multicast group id
 void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel *channel);
 
+// subscribes channel to multicast group scan using scan group id 
+void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id);
+
 // CLEANUP
+
+// public interface - cleans up after library
 void wifi_scan_close(struct wifi_scan *wifi);
+// cleans up after single channel
 void close_netlink_channel(struct netlink_channel *channel);
 
 // SCANNING
 
+// public interface - trigger scan if necessary, retrieve information about all known BSSes
 int wifi_scan_all(struct wifi_scan *wifi, struct bss_info *bss_infos, int bss_infos_length);
 
 // SCANNING - notification related
 
+// the data needed from notifications
 struct context_NL80211_MULTICAST_GROUP_SCAN
 {
-	int new_scan_results;
-	int scan_triggered;
+	int new_scan_results; //are new scan results waiting for us?
+	int scan_triggered; //was scan was already triggered by somebody else?
 };
 
+// read but do not block
 void read_past_notifications(struct netlink_channel *notifications);
+// go non-blocking 
 void set_channel_non_blocking(struct netlink_channel *channel);
+// go back blocking
 void set_channel_blocking(struct netlink_channel *channel);
+// this handles notifications
 int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data);
+// triggers scan if no results are waiting yet and if it was not already triggered
 int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_NL80211_MULTICAST_GROUP_SCAN *scanning);
+// triggers the scan
 int trigger_scan(struct netlink_channel *channel);
+// wait for the notification that scan finished
 void wait_for_new_scan_results(struct netlink_channel *notifications);
 
 // SCANNING - scan related
 
+// the data needed from new scan results
 struct context_NL80211_CMD_NEW_SCAN_RESULTS
 {
 	struct bss_info *bss_infos;
@@ -98,58 +148,81 @@ struct context_NL80211_CMD_NEW_SCAN_RESULTS
 	int scanned;	
 };
 
+// get scan results cached by the driver
 int get_scan(struct netlink_channel *channel);
+// process the new scan results 
 int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data);
+// get the information about bss (nested attribute) 
 void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *channel);
+// get the information from IE (non-netlink binary data here!)
 void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[33]);
+// get BSSID (mac address) 
 void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH]);
 
 // STATION
 
+// data needed from command new station
 struct context_NL80211_CMD_NEW_STATION
 {
 	struct station_info *station;
 };
 
+// public interface - get information about station we are associated with
 int wifi_scan_station(struct wifi_scan *wifi,struct station_info *station);
+// get information about station with BSSID
 int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH]);
+// process command new station
 int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data);
+// process station info (nested attribute)
 void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *channel);
 
 // NETLINK HELPERS
 
 // NETLINK HELPERS - message construction/sending/receiving
 
+// create the message with specified parameters for the channel
+// fill the message with additional attributes as needed with:
+// mnl_attr_put_[|u8|u16|u32|u64|str|strz] and mnl_attr_nest_[start|end]
 struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_cmd, struct netlink_channel *channel);
+// send the above message
 void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel);
+// receive the results and process them using callback function
 int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback);
 
 // NETLINK HELPERS - validation
 
+// formal requirements for attribute
 struct attribute_validation
-{
-	int attr;
-	int type;
-	int len;
+{ 
+	int attr; // attribute constant from nl80211.h
+	enum mnl_attr_data_type type; // MNL_TYPE_[UNSPEC|U8|U16|U32|U64|STRING|FLAG|MSECS|NESTED|NESTED_COMPAT|NUL_STRING|BINARY] 
+	size_t len;  // length in bytes, can be ommitted for attibutes of known size (e.g. U16), can be 0 if unspeciffied
 };
 
+// all information needed to validate attributes
 struct validation_data
 {
-	struct nlattr **attribute_table;
-	int attribute_length;
-	const struct attribute_validation *validation;
-	int validation_length;	
+	struct nlattr **attribute_table; //validated attributes are returned here
+	int attribute_length;  //at most that many, distinct constants from nl80211.h go here
+	const struct attribute_validation *validation; //vavildate against that table
+	int validation_length; 
 };
 
+// data of type struct validation_data*, validate attr against data, this is called for each attribute
 int validate(const struct nlattr *attr, void *data);
 
 // GENNERAL PURPOSE
+
+// if anything goes wrong...
 void die(const char *s);
+// as above but scream errno 
 void die_errno(const char *s);
 
 // #####################################################################
 // IMPLEMENTATION
 
+// validate only what we are going to use, note that
+// this lists all the attributes used by the library
 
 const struct attribute_validation NL80211_VALIDATION[]={
  {CTRL_ATTR_FAMILY_ID, MNL_TYPE_U16},
@@ -190,6 +263,7 @@ const int NL80211_STA_INFO_VALIDATION_LENGTH=sizeof(NL80211_STA_INFO_VALIDATION)
 
 // INITIALIZATION
 
+// public interface - pass wireless interface like wlan0
 struct wifi_scan *wifi_scan_init(const char *interface)
 {			
 	struct wifi_scan *wifi=malloc(sizeof(struct wifi_scan));
@@ -244,14 +318,6 @@ void init_netlink_socket(struct netlink_channel *channel)
 		
 	if (mnl_socket_bind(channel->nl, 0, MNL_SOCKET_AUTOPID) < 0)
 		die_errno("mnl_socket_bind");	
-}
-
-// prerequisities:
-// - channel initialized with init_netlink_channel
-void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id)
-{
-	if (mnl_socket_setsockopt(channel->nl, NETLINK_ADD_MEMBERSHIP, &scan_group_id, sizeof(int)) < 0)
-		die_errno("mnl_socket_set_sockopt");
 }
 
 // prerequisities:
@@ -322,6 +388,13 @@ void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel 
 	}
 }
 
+// prerequisities:
+// - channel initialized with init_netlink_channel
+void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id)
+{
+	if (mnl_socket_setsockopt(channel->nl, NETLINK_ADD_MEMBERSHIP, &scan_group_id, sizeof(int)) < 0)
+		die_errno("mnl_socket_set_sockopt");
+}
 
 // CLEANUP
 
@@ -345,8 +418,9 @@ void close_netlink_channel(struct netlink_channel *channel)
 
 // SCANNING
 
-//handle also trigger abort
-
+// handle also trigger abort
+// public interface
+//
 // prerequisities:
 // - wifi initialized with wifi_scan_init
 // - bss_info table of sized bss_info_length passed 
@@ -612,6 +686,7 @@ void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[3
 	strncpy(SSID_OUT, payload+2, ssid_len);
 	SSID_OUT[ssid_len]='\0';
 }
+
 void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH])
 {
 	const char *payload=mnl_attr_get_payload(attr);
@@ -629,6 +704,8 @@ void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH
 
 // STATION
 
+// public interface
+//
 // prerequisities:
 // - wifi initialized with wifi_scan_init
 int wifi_scan_station(struct wifi_scan *wifi,struct station_info *station)
