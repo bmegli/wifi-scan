@@ -18,8 +18,7 @@
   * This library uses netlink nl80211 user-space interface to retrieve wireless device information from kernel-space. 
   * For netlink communication libmnl is used (minimalistic user-space netlink library).
   * 
-  * First concept you need to understand is that netlink uses sockets (yes, those sockets!)
-  * to communicate between user-space and kernel-space and in 2016 this is the way we do it.
+  * First concept you need to understand is that netlink uses sockets to communicate between user-space and kernel-space.
   * 
   * There are 2 netlink communication channels (sockets/buffers)
   * - for notifications (about triggers, ready scan results)
