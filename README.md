@@ -96,7 +96,7 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 	struct wifi_scan *wifi = wifi_scan_init("wlan0");
 	
 	if (wifi_scan_station(wifi, &station) > 0 )
-		printf("%s signal %d dBm %d rx %d tx\n",
+		printf("%s signal %d dBm %u rx %u tx\n",
 		station.ssid,  station.signal_dbm,
 		station.rx_packets, station.tx_packets);
 	
