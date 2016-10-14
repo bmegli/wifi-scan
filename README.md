@@ -23,7 +23,7 @@ Note that if library dies - *it also kills your program* and you have no chance 
 
 ## Dependencies
 
-The library depends on [libmnl](http://www.netfilter.org/projects/libmnl/) for netlink nl80211 user space - kernel communication.
+The library depends on [libmnl](http://www.netfilter.org/projects/libmnl/) for netlink nl80211 user space - kernel space communication.
 
 ## Building Instructions
 
@@ -119,7 +119,7 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 
 ### Compiling your code
 
-Don't forget to link with lmnl
+Don't forget to link with `lmnl`
 
 C
 ``` bash
@@ -130,3 +130,16 @@ C++
 ``` bash
 gxx wifi_scan.c your_program.cpp -lmnl -o your-program
 ```
+
+## Understanding nl80211 Netlink
+
+Here are some of the resources that helped writing this library:
+
+- Netlink Library (libnl) [documentation](https://www.infradead.org/~tgr/libnl/doc/core.html)
+- Minimalistic Netlink Library (libmnl) doxygen [documentation](https://www.netfilter.org/projects/libmnl/doxygen/) and [code](https://git.netfilter.org/libmnl/)
+- nl80211 [header file](http://lxr.free-electrons.com/source/include/uapi/linux/nl80211.h)
+- iw [code](http://git.kernel.org/?p=linux/kernel/git/jberg/iw.git)
+- wavemon [code](https://github.com/uoaerg/wavemon)
+- wpa_supplicant and hostapd [code](http://ftp.tku.edu.tw/NetBSD/NetBSD-current/src/external/bsd/wpa/dist/src/drivers/driver_nl80211_scan.c)
+
+And finally the implementation `wifi-scan.c` has some comments that may be usefull to you.
