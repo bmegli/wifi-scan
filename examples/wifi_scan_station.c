@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 		else if(status==-1)
 			perror("Unable to get station information\n");
 		else
-			printf("%s %s signal %d dBm %d rx %d tx\n",bssid_to_string(station.bssid, mac), station.ssid,  station.signal_dbm,station.rx_packets, station.tx_packets);			
+			printf("%s %s signal %d dBm %u rx %u tx\n",bssid_to_string(station.bssid, mac), station.ssid,  station.signal_dbm,station.rx_packets, station.tx_packets);			
 		sleep(1);
 	}
 
