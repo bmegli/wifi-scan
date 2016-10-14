@@ -8,7 +8,7 @@ CXX_FLAGS = -O2 -std=c++11 -Wall -c $(DEBUG)
 LFLAGS = -O2 -Wall -lmnl $(DEBUG)
 	
 WIFI_SCAN : wifi_scan.h wifi_scan.c
-	$(CC) $(L_FLAGS) wifi_scan.c
+	$(CC) $(C_FLAGS) -lmnl wifi_scan.c
 
 examples: $(EXAMPLES)
 	
