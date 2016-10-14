@@ -128,7 +128,9 @@ gcc wifi_scan.c your_program.c -lmnl -o your-program
 
 C++
 ``` bash
-gxx wifi_scan.c your_program.cpp -lmnl -o your-program
+gcc -c wifi_scan.c
+g++ -c your_program.c
+g++ wifi_scan.o your_program.o -lmnl -o your-program
 ```
 
 ## Understanding nl80211 Netlink
