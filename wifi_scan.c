@@ -26,15 +26,15 @@
   * 
   * wifi_scan_init initializes 2 channels, gets nl80211 id using generic netlink (genetlink), gets id of 
   * multicast group scan and subscribes to this group notifcations using notifications channel.
-  * 
-  * wifi_scan_close frees up resources of two channels and any other resoureces that library uses.
-  * 
+  *  
   * wifi_scan_station gets the last (not necessarilly fresh) scan results that are available from the device,
   * checks which station we are associated with and retrieves information about this station (using commands channel)
   * 
   * wifi_scan_all reads up any pending notifications, commands a trigger if necessary, waits for the device to gather
   * results and finally reads scan results with get_scan function (those are fresh results)
   * 
+  * wifi_scan_close frees up resources of two channels and any other resoureces that library uses.
+  *
   * prepare_nl_messsage/send_nl_message/receive_nl_message are helper functions to simplify common tasks when issuing commands
   * 
   * validate function simplifies common tasks (validates each attribute against table specifying what is valid)
