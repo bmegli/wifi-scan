@@ -21,10 +21,10 @@ examples/wifi-scan-all : wifi_scan.o examples/wifi_scan_all.o
 	$(CC) $(LFLAGS) wifi_scan.o examples/wifi_scan_all.o -o examples/wifi-scan-all
 		
 examples/wifi_scan_station.o : wifi_scan.h examples/wifi_scan_station.c
-	$(CC) $(CFLAGS) examples/wifi_scan_station.c
+	$(CC) $(CFLAGS) examples/wifi_scan_station.c -o examples/wifi-scan-station.o
 
 examples/wifi_scan_all.o : wifi_scan.h examples/wifi_scan_all.c
-	$(CC) $(CFLAGS) examples/wifi_scan_all.c
+	$(CC) $(CFLAGS) examples/wifi_scan_all.c -o examples/wifi-scan-all.o
 		
 clean:
 	\rm -f *.o examples/*.o $(WIFI_SCAN) $(EXAMPLES)
