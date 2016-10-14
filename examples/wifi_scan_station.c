@@ -36,8 +36,6 @@ const char *bssid_to_string(const uint8_t bssid[BSSID_LENGTH], char bssid_string
 	return bssid_string;
 }
 
-const int BSS_INFOS=10; //the maximum amounts of APs (Access Points) we want to store
-
 void Usage(char **argv);
 
 int main(int argc, char **argv)
