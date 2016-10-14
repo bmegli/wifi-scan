@@ -56,7 +56,7 @@ git clone https://github.com/bmegli/wifi-scan.git
 
 ``` bash
 cd wifi-scan
-make
+make all
 ```
 
 ## Testing
@@ -129,7 +129,7 @@ gcc wifi_scan.c your_program.c -lmnl -o your-program
 C++
 ``` bash
 gcc -c wifi_scan.c
-g++ -c your_program.c
+g++ -c your_program.cpp
 g++ wifi_scan.o your_program.o -lmnl -o your-program
 ```
 
