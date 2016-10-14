@@ -5,10 +5,10 @@ CXX = g++
 DEBUG = 
 CFLAGS = -O2 -Wall -c $(DEBUG)
 CXX_FLAGS = -O2 -std=c++11 -Wall -c $(DEBUG)
-LFLAGS = -Wall $(DEBUG)
+LFLAGS = -O2 -Wall -lmnl $(DEBUG)
 	
 WIFI_SCAN : wifi_scan.h wifi_scan.c
-	$(CC) $(C_FLAGS) wifi_scan.c
+	$(CC) $(L_FLAGS) wifi_scan.c
 
 examples: $(EXAMPLES)
 	
