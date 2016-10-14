@@ -7,12 +7,12 @@ CFLAGS = -O2 -Wall -c $(DEBUG)
 CXX_FLAGS = -O2 -std=c++11 -Wall -c $(DEBUG)
 LFLAGS = -O2 -Wall -lmnl $(DEBUG)
 	
-WIFI_SCAN : wifi_scan.h wifi_scan.c
-	$(CC) $(C_FLAGS) -lmnl wifi_scan.c
+wifi-scan.o : wifi_scan.h wifi_scan.c
+	$(CC) $(C_FLAGS) wifi_scan.c
 
 examples: $(EXAMPLES)
 	
-all : $(WIFI_SCAN) examples
+all : $(WIFI_SCAN) $(EXAMPLES)
 		
 examples/wifi-scan-station : wifi_scan.o examples/wifi_scan_station.o
 	$(CC) $(L_FLAGS) wifi_scan.o examples/wifi_scan_station.o -o examples/wifi-scan-station
