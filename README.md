@@ -55,11 +55,8 @@ git clone https://github.com/bmegli/wifi-scan.git
 ### Building the examples
 
 ``` bash
-gcc wifi_scan.c examples/wifi_scan_station.c -lmnl -o wifi-scan-station
-```
-
-``` bash
-gcc wifi_scan.c examples/wifi_scan_all.c -lmnl -o wifi-scan-all
+cd wifi-scan
+make
 ```
 
 ## Testing
@@ -118,4 +115,18 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 		(bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
 
 	wifi_scan_close(wifi);
+```
+
+### Compiling your code
+
+Don't forget to link with lmnl
+
+C
+``` bash
+gcc wifi_scan.c your_program.c -lmnl -o your-program
+```
+
+C++
+``` bash
+gxx wifi_scan.c your_program.cpp -lmnl -o your-program
 ```
