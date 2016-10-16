@@ -647,7 +647,7 @@ void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *chann
 	}
 
 	//check bounds, make exception if we have found associated station and replace previous data
-	if( scan_results->scanned >= scan_results->bss_infos_length || (scan_results->bss_infos_length==0 && bss==scan_results->bss_infos) )
+	if(scan_results->bss_infos_length == 0 || ( scan_results->scanned >= scan_results->bss_infos_length && bss != scan_results->bss_infos ) )
 	{
 		++scan_results->scanned;
 		return;
