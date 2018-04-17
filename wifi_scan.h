@@ -1,15 +1,12 @@
 /*
  * wifi-scan library header
  *
- * Copyright (C) 2016 Bartosz Meglicki <meglickib@gmail.com>
+ * Copyright 2016-2018 (C) Bartosz Meglicki <meglickib@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3 as
- * published by the Free Software Foundation.
- * This program is distributed "as is" WITHOUT ANY WARRANTY of any
- * kind, whether express or implied; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ *
  */
 
 #pragma once
