@@ -145,3 +145,14 @@ Here are some of the resources that helped writing this library:
 - wpa_supplicant and hostapd [code](http://ftp.tku.edu.tw/NetBSD/NetBSD-current/src/external/bsd/wpa/dist/src/drivers/driver_nl80211_scan.c)
 
 And finally the implementation `wifi-scan.c` has some comments that may be usefull to you.
+
+## License
+
+Library is licensed under Mozilla Public License, v. 2.0
+
+This is similiar to LGPL but more permissive:
+- you can use it as LGPL in prioprietrary software
+- unlike LGPL you may compile it statically with your code
+
+Like in LGPL, if you modify this library, you have to make your changes available.
+Making a github fork of the library with your changes satisfies those requirements perfectly.
