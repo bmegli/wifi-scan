@@ -668,11 +668,11 @@ void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *chann
 }
 
 //This is guesswork! Read up on that!!! I don't think it's netlink in this attribute, some lower beacon layer
-void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[33])
+void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[SSID_MAX_LENGTH_WITH_NULL])
 {
 	const char *payload=mnl_attr_get_payload(attr);
 	int len=mnl_attr_get_payload_len(attr);
-	if(len==0 || payload[0]!=0 || payload[1] > 32 || payload[1] > len-2)
+	if(len==0 || payload[0]!=0 || payload[1] >= SSID_MAX_LENGTH_WITH_NULL || payload[1] > len-2)
 	{
 		fprintf(stderr, "SSID len 0 or payload not starting from 0 or payload length > 32 or payload length > length-2!\n");
 		SSID_OUT[0]='\0';
