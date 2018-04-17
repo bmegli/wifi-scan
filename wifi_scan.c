@@ -674,8 +674,8 @@ void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[3
 	int len=mnl_attr_get_payload_len(attr);
 	if(len==0 || payload[0]!=0 || payload[1] > 32 || payload[1] > len-2)
 	{
-		fprintf(stderr, "SSID len 0 or payload not starting from 0 or payload length > 32 or payload length > length-2\n!");
-		SSID_OUT="\0";
+		fprintf(stderr, "SSID len 0 or payload not starting from 0 or payload length > 32 or payload length > length-2!\n");
+		SSID_OUT[0]='\0';
 		return;
 	}
 	int ssid_len=payload[1];
