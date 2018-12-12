@@ -27,46 +27,21 @@ The library depends on [libmnl](http://www.netfilter.org/projects/libmnl/) for n
 
 ## Building Instructions
 
-### Compilers and make
-
 ``` bash
-$ sudo apt-get update
-$ sudo apt-get install build-essential 
-```
-
-### Dependencies
-
-``` bash
-$ sudo apt-get install libmnl0 libmnl-dev
-```
-
-### Getting git
-
-``` bash
+# update package repositories
+sudo apt-get update 
+# get compilers and make
+sudo apt-get install build-essential
+# get dependencies
+sudo apt-get install libmnl0 libmnl-dev
+# get git
 sudo apt-get install git
-```
-
-### Cloning the repository
-
-``` bash
+# clone the repository
 git clone https://github.com/bmegli/wifi-scan.git
-```
 
-### Building the examples
-
-``` bash
+# finally build the library and examples
 cd wifi-scan
 make all
-```
-
-### Or build with cmake
-
-``` bash
-cd wifi-scan
-mkdir build
-cd build
-cmake ..
-make
 ```
 
 ## Testing
@@ -99,7 +74,7 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 ### wifi-scan-station
 
 ``` C
-	struct station_info station;    
+	struct station_info station;
 	struct wifi_scan *wifi = wifi_scan_init("wlan0");
 	
 	if (wifi_scan_station(wifi, &station) > 0 )
@@ -166,3 +141,19 @@ This is similiar to LGPL but more permissive:
 
 Like in LGPL, if you modify this library, you have to make your changes available.
 Making a github fork of the library with your changes satisfies those requirements perfectly.
+
+## Additional information
+
+### Building with CMake
+
+Alternatively build examples and shared library with Cmake
+
+``` bash
+sudo apt-get install cmake
+cd wifi-scan
+mkdir build
+cd build
+cmake ..
+make
+```
+
