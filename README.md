@@ -59,6 +59,16 @@ cd wifi-scan
 make all
 ```
 
+### Or build with cmake
+
+``` bash
+cd wifi-scan
+mkdir build
+cd build
+cmake ..
+make
+```
+
 ## Testing
 
 Check your wireless interface name with `ifconfig`:
