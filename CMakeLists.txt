@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.0)
 
 project(
-    wifi-scan 
-    DESCRIPTION "This is a small C/C++ library for monitoring signal strength of WiFi networks. It can collect data from associated station only or all networks around"
+    wifi-scan
 )
 
 add_library(wifi-scan SHARED wifi_scan.c)
