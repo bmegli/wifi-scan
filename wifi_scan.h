@@ -33,6 +33,7 @@ struct bss_info
 	enum bss_status status;  //anything >=0 means that your are connected to this station/network
 	int32_t signal_mbm;  //signal strength in mBm, divide it by 100 to get signal in dBm
 	int32_t seen_ms_ago; //when the above information was collected
+	uint32_t frequency; // frequency on which AP is sending in mHz
 };
 
 // like above
