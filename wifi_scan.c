@@ -84,26 +84,26 @@ struct context_CTRL_CMD_GETFAMILY
 struct wifi_scan *wifi_scan_init(const char *interface);
 
 // allocate memory, set initial values, etc.
-void init_netlink_channel(struct netlink_channel *channel, const char *interface);
+static void init_netlink_channel(struct netlink_channel *channel, const char *interface);
 // create netlink sockets for generic netlink
-void init_netlink_socket(struct netlink_channel *channel);
+static void init_netlink_socket(struct netlink_channel *channel);
 
 // execute command to get nl80211 family and process the results
-int get_family_and_scan_ids(struct netlink_channel *channel);
+static int get_family_and_scan_ids(struct netlink_channel *channel);
 // this processes kernel reply for get family request, stores family id
-int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data);
+static int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data);
 // parses multicast groups to get scan multicast group id
-void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel *channel);
+static void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel *channel);
 
 // subscribes channel to multicast group scan using scan group id
-void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id);
+static void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id);
 
 // CLEANUP
 
 // public interface - cleans up after library
 void wifi_scan_close(struct wifi_scan *wifi);
 // cleans up after single channel
-void close_netlink_channel(struct netlink_channel *channel);
+static void close_netlink_channel(struct netlink_channel *channel);
 
 // SCANNING
 
@@ -120,19 +120,19 @@ struct context_NL80211_MULTICAST_GROUP_SCAN
 };
 
 // read but do not block
-void read_past_notifications(struct netlink_channel *notifications);
+static void read_past_notifications(struct netlink_channel *notifications);
 // go non-blocking
-void set_channel_non_blocking(struct netlink_channel *channel);
+static void set_channel_non_blocking(struct netlink_channel *channel);
 // go back blocking
-void set_channel_blocking(struct netlink_channel *channel);
+static void set_channel_blocking(struct netlink_channel *channel);
 // this handles notifications
-int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data);
+static int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data);
 // triggers scan if no results are waiting yet and if it was not already triggered
-int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_NL80211_MULTICAST_GROUP_SCAN *scanning);
+static int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_NL80211_MULTICAST_GROUP_SCAN *scanning);
 // triggers the scan
-int trigger_scan(struct netlink_channel *channel);
+static int trigger_scan(struct netlink_channel *channel);
 // wait for the notification that scan finished
-void wait_for_new_scan_results(struct netlink_channel *notifications);
+static void wait_for_new_scan_results(struct netlink_channel *notifications);
 
 // SCANNING - scan related
 
@@ -145,15 +145,15 @@ struct context_NL80211_CMD_NEW_SCAN_RESULTS
 };
 
 // get scan results cached by the driver
-int get_scan(struct netlink_channel *channel);
+static int get_scan(struct netlink_channel *channel);
 // process the new scan results
-int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data);
+static int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data);
 // get the information about bss (nested attribute)
-void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *channel);
+static void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *channel);
 // get the information from IE (non-netlink binary data here!)
-void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[33]);
+static void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[33]);
 // get BSSID (mac address)
-void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH]);
+static void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH]);
 
 // STATION
 
@@ -166,11 +166,11 @@ struct context_NL80211_CMD_NEW_STATION
 // public interface - get information about station we are associated with
 int wifi_scan_station(struct wifi_scan *wifi,struct station_info *station);
 // get information about station with BSSID
-int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH]);
+static int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH]);
 // process command new station
-int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data);
+static int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data);
 // process station info (nested attribute)
-void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *channel);
+static void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *channel);
 
 // NETLINK HELPERS
 
@@ -179,11 +179,11 @@ void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *
 // create the message with specified parameters for the channel
 // fill the message with additional attributes as needed with:
 // mnl_attr_put_[|u8|u16|u32|u64|str|strz] and mnl_attr_nest_[start|end]
-struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_cmd, struct netlink_channel *channel);
+static struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_cmd, struct netlink_channel *channel);
 // send the above message
-void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel);
+static void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel);
 // receive the results and process them using callback function
-int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback);
+static int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback);
 
 // NETLINK HELPERS - validation
 
@@ -205,14 +205,14 @@ struct validation_data
 };
 
 // data of type struct validation_data*, validate attr against data, this is called for each attribute
-int validate(const struct nlattr *attr, void *data);
+static int validate(const struct nlattr *attr, void *data);
 
 // GENNERAL PURPOSE
 
 // if anything goes wrong...
-void die(const char *s);
+static void die(const char *s);
 // as above but scream errno
-void die_errno(const char *s);
+static void die_errno(const char *s);
 
 // #####################################################################
 // IMPLEMENTATION
@@ -288,7 +288,7 @@ struct wifi_scan *wifi_scan_init(const char *interface)
 
 // prerequisities:
 // - proper interface, e.g. wlan0, wlan1
-void init_netlink_channel(struct netlink_channel *channel, const char *interface)
+static void init_netlink_channel(struct netlink_channel *channel, const char *interface)
 {
 	channel->sequence=1;
 	channel->buf=(char*) malloc(MNL_SOCKET_BUFFER_SIZE);
@@ -306,7 +306,7 @@ void init_netlink_channel(struct netlink_channel *channel, const char *interface
 	init_netlink_socket(channel);
 }
 
-void init_netlink_socket(struct netlink_channel *channel)
+static void init_netlink_socket(struct netlink_channel *channel)
 {
 	channel->nl = mnl_socket_open(NETLINK_GENERIC);
 
@@ -320,7 +320,7 @@ void init_netlink_socket(struct netlink_channel *channel)
 // prerequisities:
 // - channel initialized with init_netlink_channel
 // - channel context of type context_CTRL_CMD_GETFAMILY
-int get_family_and_scan_ids(struct netlink_channel *channel)
+static int get_family_and_scan_ids(struct netlink_channel *channel)
 {
 	struct nlmsghdr *nlh=prepare_nl_message(GENL_ID_CTRL, NLM_F_REQUEST | NLM_F_ACK,  CTRL_CMD_GETFAMILY, channel);
 	mnl_attr_put_u32(nlh, CTRL_ATTR_FAMILY_ID, GENL_ID_CTRL);
@@ -334,7 +334,7 @@ int get_family_and_scan_ids(struct netlink_channel *channel)
 // prerequisities:
 // - netlink_channel passed as data
 // - data->context of type struct context_CTRL_CMD_GETFAMILY
-int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data)
+static int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data)
 {
 	struct nlattr *tb[CTRL_ATTR_MAX+1] = {};
 	struct genlmsghdr *genl = (struct genlmsghdr *)mnl_nlmsg_get_payload(nlh);
@@ -356,7 +356,7 @@ int handle_CTRL_CMD_GETFAMILY(const struct nlmsghdr *nlh, void *data)
 
 // prerequisities:
 // - data->context of type struct context_CTRL_CMD_GETFAMILY
-void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel *channel)
+static void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel *channel)
 {
 	struct nlattr *pos;
 
@@ -387,7 +387,7 @@ void parse_CTRL_ATTR_MCAST_GROUPS(struct nlattr *nested, struct netlink_channel 
 
 // prerequisities:
 // - channel initialized with init_netlink_channel
-void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id)
+static void subscribe_NL80211_MULTICAST_GROUP_SCAN(struct netlink_channel *channel, uint32_t scan_group_id)
 {
 	if (mnl_socket_setsockopt(channel->nl, NETLINK_ADD_MEMBERSHIP, &scan_group_id, sizeof(int)) < 0)
 		die_errno("mnl_socket_set_sockopt");
@@ -406,7 +406,7 @@ void wifi_scan_close(struct wifi_scan *wifi)
 
 // prerequisities:
 // - channel initalized with init_netlink-channel
-void close_netlink_channel(struct netlink_channel *channel)
+static void close_netlink_channel(struct netlink_channel *channel)
 {
 	free(channel->buf);
 	mnl_socket_close(channel->nl);
@@ -453,7 +453,7 @@ int wifi_scan_all(struct wifi_scan *wifi, struct bss_info *bss_infos, int bss_in
 // prerequisities
 // - subscribed to scan group with subscribe_NL80211_MULTICAST_GROUP_SCAN
 // - context_NL80211_MULTICAST_GROUP_SCAN set for notifications
-void read_past_notifications(struct netlink_channel *notifications)
+static void read_past_notifications(struct netlink_channel *notifications)
 {
 	set_channel_non_blocking(notifications);
 	int ret, run_ret;
@@ -475,7 +475,7 @@ void read_past_notifications(struct netlink_channel *notifications)
 
 // prerequisities
 // - channel initialized with init_netlink_channel
-void set_channel_non_blocking(struct netlink_channel *channel)
+static void set_channel_non_blocking(struct netlink_channel *channel)
 {
 	int fd = mnl_socket_get_fd(channel->nl);
 	int flags = fcntl(fd, F_GETFL, 0);
@@ -487,7 +487,7 @@ void set_channel_non_blocking(struct netlink_channel *channel)
 
 // prerequisities
 // - channel initialized with init_netlink_channel
-void set_channel_blocking(struct netlink_channel *channel)
+static void set_channel_blocking(struct netlink_channel *channel)
 {
 	int fd = mnl_socket_get_fd(channel->nl);
 	int flags = fcntl(fd, F_GETFL, 0);
@@ -501,7 +501,7 @@ void set_channel_blocking(struct netlink_channel *channel)
 // - subscribed to scan group with subscribe_NL80211_MULTICAST_GROUP_SCAN
 // - netlink_channel passed as data
 // - data->context of type struct context_NL80211_MULTICAST_GROUP_SCAN
-int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data)
+static int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data)
 {
 	struct netlink_channel *channel=data;
 	struct context_NL80211_MULTICAST_GROUP_SCAN *context = channel->context;
@@ -533,7 +533,7 @@ int handle_NL80211_MULTICAST_GROUP_SCAN(const struct nlmsghdr *nlh, void *data)
 // prerequisities:
 // - commands initialized with init_netlink_channel
 // - scanning updated with read_past_notifications
-int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_NL80211_MULTICAST_GROUP_SCAN *scanning)
+static int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_NL80211_MULTICAST_GROUP_SCAN *scanning)
 {
 	if(!scanning->new_scan_results && !scanning->scan_triggered)
 		if(trigger_scan(commands) == -1)
@@ -543,7 +543,7 @@ int trigger_scan_if_necessary(struct netlink_channel *commands, struct context_N
 
 // prerequisities:
 // - channel initialized with init_netlink_channel
-int trigger_scan(struct netlink_channel *channel)
+static int trigger_scan(struct netlink_channel *channel)
 {
 	struct nlmsghdr *nlh=prepare_nl_message(channel->nl80211_id, NLM_F_REQUEST  | NLM_F_ACK, NL80211_CMD_TRIGGER_SCAN, channel);
 	mnl_attr_put_u32(nlh,  NL80211_ATTR_IFINDEX, channel->ifindex);
@@ -555,7 +555,7 @@ int trigger_scan(struct netlink_channel *channel)
 // - channel initalized with init_netlink_channel
 // - subscribed to scan group with subscribe_NL80211_MULTICAST_GROUP_SCAN
 // - context_NL80211_MULTICAST_GROUP_SCAN set for notifications
-void wait_for_new_scan_results(struct netlink_channel *notifications)
+static void wait_for_new_scan_results(struct netlink_channel *notifications)
 {
 	struct context_NL80211_MULTICAST_GROUP_SCAN *scanning=notifications->context;
 	int ret;
@@ -575,7 +575,7 @@ void wait_for_new_scan_results(struct netlink_channel *notifications)
 // prerequisities:
 // - channel initalized with init_netlink_channel
 // - channel context of type context_NL80211_CMD_NEW_SCAN_RESULTS
-int get_scan(struct netlink_channel *channel)
+static int get_scan(struct netlink_channel *channel)
 {
 	struct nlmsghdr *nlh=prepare_nl_message(channel->nl80211_id, NLM_F_REQUEST | NLM_F_DUMP | NLM_F_ACK, NL80211_CMD_GET_SCAN, channel);
 	mnl_attr_put_u32(nlh,  NL80211_ATTR_IFINDEX, channel->ifindex);
@@ -587,7 +587,7 @@ int get_scan(struct netlink_channel *channel)
 // prerequisities:
 // - netlink_channel passed as data
 // - data->context of type context_NL80211_CMD_NEW_SCAN_RESULTS
-int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data)
+static int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data)
 {
 	struct netlink_channel *channel=data;
 	struct nlattr *tb[NL80211_ATTR_MAX+1] = {};
@@ -622,7 +622,7 @@ int handle_NL80211_CMD_NEW_SCAN_RESULTS(const struct nlmsghdr *nlh, void *data)
 
 // prerequisities:
 // - channel context of type context_NL80211_CMD_NEW_SCAN_RESULTS
-void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *channel)
+static void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *channel)
 {
 	struct nlattr *tb[NL80211_BSS_MAX+1] = {};
 	struct validation_data vd={tb, NL80211_BSS_MAX, NL80211_BSS_VALIDATION, NL80211_BSS_VALIDATION_LENGTH};
@@ -672,7 +672,7 @@ void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *chann
 }
 
 //This is guesswork! Read up on that!!! I don't think it's netlink in this attribute, some lower beacon layer
-void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[SSID_MAX_LENGTH_WITH_NULL])
+static void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[SSID_MAX_LENGTH_WITH_NULL])
 {
 	const char *payload=mnl_attr_get_payload(attr);
 	int len=mnl_attr_get_payload_len(attr);
@@ -687,7 +687,7 @@ void parse_NL80211_BSS_INFORMATION_ELEMENTS(struct nlattr *attr, char SSID_OUT[S
 	SSID_OUT[ssid_len]='\0';
 }
 
-void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH])
+static void parse_NL80211_BSS_BSSID(struct nlattr *attr, uint8_t bssid_out[BSSID_LENGTH])
 {
 	const char *payload=mnl_attr_get_payload(attr);
 	int len=mnl_attr_get_payload_len(attr);
@@ -734,7 +734,7 @@ int wifi_scan_station(struct wifi_scan *wifi,struct station_info *station)
 // prerequisites:
 // - channel initalized with init_netlink_channel
 // - context_NL80211_CMD_NEW_STATION set for channel
-int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH])
+static int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH])
 {
 	struct nlmsghdr *nlh=prepare_nl_message(channel->nl80211_id, NLM_F_REQUEST | NLM_F_ACK, NL80211_CMD_GET_STATION, channel);
 	mnl_attr_put_u32(nlh,  NL80211_ATTR_IFINDEX, channel->ifindex);
@@ -746,7 +746,7 @@ int get_station(struct netlink_channel *channel, uint8_t bssid[BSSID_LENGTH])
 // prerequisities:
 // - netlink_channel passed as data
 // - data->context of type context_NL80211_CMD_NEW_STATION
-int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data)
+static int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data)
 {
 	struct netlink_channel *channel=data;
 	struct nlattr *tb[NL80211_ATTR_MAX+1] = {};
@@ -771,7 +771,7 @@ int handle_NL80211_CMD_NEW_STATION(const struct nlmsghdr *nlh, void *data)
 
 // prerequisities:
 // - channel context of type context_NL80211_CMD_NEW_STATION
-void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *channel)
+static void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *channel)
 {
 	struct nlattr *tb[NL80211_STA_INFO_MAX+1] = {};
 	struct validation_data vd={tb, NL80211_STA_INFO_MAX, NL80211_STA_INFO_VALIDATION, NL80211_STA_INFO_VALIDATION_LENGTH};
@@ -795,7 +795,7 @@ void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_channel *
 
 // prerequisities:
 // - channel initialized with init_netlink_channel
-struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_cmd, struct netlink_channel *channel)
+static struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_cmd, struct netlink_channel *channel)
 {
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *genl;
@@ -814,7 +814,7 @@ struct nlmsghdr *prepare_nl_message(uint32_t type, uint16_t flags, uint8_t genl_
 // prerequisities:
 // - prepare_nl_message called first
 // - mnl_attr_put_xxx used if additional attributes needed
-void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel)
+static void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel)
 {
 	if (mnl_socket_sendto(channel->nl, nlh, nlh->nlmsg_len) < 0)
 		die_errno("mnl_socket_sendto");
@@ -823,7 +823,7 @@ void send_nl_message(struct nlmsghdr *nlh, struct netlink_channel *channel)
 // prerequisities:
 // - send_nl_message called first
 // - prerequisities for callback matched
-int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback)
+static int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback)
 {
 	int ret;
 	unsigned int portid = mnl_socket_get_portid(channel->nl);
@@ -847,7 +847,7 @@ int receive_nl_message(struct netlink_channel *channel, mnl_cb_t callback)
 
 // prerequisities:
 // - data of type validation_data
-int validate(const struct nlattr *attr, void *data)
+static int validate(const struct nlattr *attr, void *data)
 {
 	struct validation_data *vd=data;
 	const struct nlattr **tb = (const struct nlattr**) vd->attribute_table;
@@ -880,14 +880,14 @@ int validate(const struct nlattr *attr, void *data)
 
 // GENNERAL PURPOSE
 
-void die(const char *s)
+static void die(const char *s)
 {
 	fprintf(stderr, "%s", s);
 	fprintf(stderr, "\n");
 	exit(1);
 }
 
-void die_errno(const char *s)
+static void die_errno(const char *s)
 {
     perror(s);
     exit(1);
