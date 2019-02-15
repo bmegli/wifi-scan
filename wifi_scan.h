@@ -29,6 +29,7 @@ struct wifi_scan;
 struct bss_info
 {
 	uint8_t bssid[BSSID_LENGTH]; //this is hardware mac address of your AP
+	uint32_t frequency; // this is AP frequency in mHz
 	char ssid[SSID_MAX_LENGTH_WITH_NULL]; //this is the name of your AP as you see it when connecting
 	enum bss_status status;  //anything >=0 means that your are connected to this station/network
 	int32_t signal_mbm;  //signal strength in mBm, divide it by 100 to get signal in dBm

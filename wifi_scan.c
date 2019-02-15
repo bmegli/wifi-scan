@@ -230,6 +230,7 @@ const struct attribute_validation NL80211_MCAST_GROUPS_VALIDATION[]={
 
 const struct attribute_validation NL80211_BSS_VALIDATION[]={
  {NL80211_BSS_BSSID, MNL_TYPE_BINARY, 6},
+ {NL80211_BSS_FREQUENCY, MNL_TYPE_U32},
  {NL80211_BSS_INFORMATION_ELEMENTS, MNL_TYPE_BINARY},
  {NL80211_BSS_STATUS, MNL_TYPE_U32},
  {NL80211_BSS_SIGNAL_MBM, MNL_TYPE_U32},
@@ -652,6 +653,9 @@ void parse_NL80211_ATTR_BSS(struct nlattr *nested, struct netlink_channel *chann
 
 	if ( tb[NL80211_BSS_BSSID])
 		parse_NL80211_BSS_BSSID(tb[NL80211_BSS_BSSID], bss->bssid);
+
+	if ( tb[NL80211_BSS_FREQUENCY])
+		bss->frequency = mnl_attr_get_u32(tb[NL80211_BSS_FREQUENCY]);
 			
 	if ( tb[NL80211_BSS_INFORMATION_ELEMENTS])
 		parse_NL80211_BSS_INFORMATION_ELEMENTS(tb[NL80211_BSS_INFORMATION_ELEMENTS], bss->ssid);

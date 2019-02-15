@@ -75,7 +75,14 @@ int main(int argc, char **argv)
 			perror("Unable to get scan data");
 		else //wifi_scan_all returns the number of found stations, it may be greater than BSS_INFOS that's why we test for both in the loop
 			for(i=0;i<status && i<BSS_INFOS;++i)	
-				printf("%s %s signal %d dBm seen %d ms ago status %s\n",bssid_to_string(bss[i].bssid, mac), bss[i].ssid,  bss[i].signal_mbm/100, bss[i].seen_ms_ago, (bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
+				printf("%s %s signal %d dBm on frequency %u MHz seen %d ms ago status %s\n",
+				   bssid_to_string(bss[i].bssid, mac), 
+				   bss[i].ssid,  
+				   bss[i].signal_mbm/100, 
+				   bss[i].frequency,
+				   bss[i].seen_ms_ago, 
+				   (bss[i].status==BSS_ASSOCIATED ? "associated" : "")
+				);
 
 		printf("\n");
 
