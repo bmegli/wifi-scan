@@ -78,8 +78,8 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 	struct wifi_scan *wifi = wifi_scan_init("wlan0");
 	
 	if (wifi_scan_station(wifi, &station) > 0 )
-		printf("%s signal %d dBm %u rx %u tx\n",
-		station.ssid,  station.signal_dbm,
+		printf("%s signal %d dBm avg %d dBm rx %u tx %u\n",
+		station.signal_dbm, station.signal_avg_dbm,
 		station.rx_packets, station.tx_packets);
 	
 	wifi_scan_close(wifi);
@@ -96,7 +96,7 @@ Normally you would call `wifi_scan_station` or `wifi_scan_all` in a loop.
 		
 	for(i=0;i<status && i<10;++i)	
 		printf("%s signal %d dBm on %u MHz seen %d ms ago status %s\n",
-		bss[i].ssid,  bss[i].signal_mbm/100, bss[i].frequency, bss[i].seen_ms_ago,
+		bss[i].signal_mbm/100, bss[i].frequency, bss[i].seen_ms_ago,
 		(bss[i].status==BSS_ASSOCIATED ? "associated" : ""));
 
 	wifi_scan_close(wifi);

@@ -247,6 +247,7 @@ const struct attribute_validation NL80211_CMD_NEW_STATION_VALIDATION[]={
 
 const struct attribute_validation NL80211_STA_INFO_VALIDATION[]={
  {NL80211_STA_INFO_SIGNAL, MNL_TYPE_U8},
+ {NL80211_STA_INFO_SIGNAL_AVG, MNL_TYPE_U8},
  {NL80211_STA_INFO_RX_PACKETS, MNL_TYPE_U32},
  {NL80211_STA_INFO_TX_PACKETS, MNL_TYPE_U32}
 };
@@ -782,6 +783,8 @@ static void parse_NL80211_ATTR_STA_INFO(struct nlattr *nested, struct netlink_ch
 
 	if ( tb[NL80211_STA_INFO_SIGNAL])
 		station->signal_dbm=(int8_t)mnl_attr_get_u8(tb[NL80211_STA_INFO_SIGNAL]);
+	if ( tb[NL80211_STA_INFO_SIGNAL_AVG])
+		station->signal_avg_dbm=(int8_t)mnl_attr_get_u8(tb[NL80211_STA_INFO_SIGNAL_AVG]);
 	if (tb[NL80211_STA_INFO_RX_PACKETS])
 		station->rx_packets=mnl_attr_get_u32(tb[NL80211_STA_INFO_RX_PACKETS]);
 	if (tb[NL80211_STA_INFO_TX_PACKETS])

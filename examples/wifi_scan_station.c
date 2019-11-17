@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	printf("This is just example, this is library - not utility!\n");
+	printf("This is just example, this is library - not utility\n");
 	printf("### Close the program with ctrl+c when you're done ###\n\n");
 	
 	// initialize the library with network interface argv[1] (e.g. wlan0)
@@ -68,10 +68,12 @@ int main(int argc, char **argv)
 		else if(status==-1)
 			perror("Unable to get station information\n");
 		else
-			printf("%s %s signal %d dBm %u rx %u tx\n",bssid_to_string(station.bssid, mac), station.ssid,  station.signal_dbm,station.rx_packets, station.tx_packets);			
+			printf("%s %s signal %d dBm avg %d dBm rx %u tx %u \n",
+				bssid_to_string(station.bssid, mac), station.ssid,
+				station.signal_dbm, station.signal_avg_dbm,
+				station.rx_packets, station.tx_packets);
 		sleep(1);
 	}
-
 
 	//free the library resources
 	wifi_scan_close(wifi);

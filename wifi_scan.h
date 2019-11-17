@@ -42,7 +42,8 @@ struct station_info
 	uint8_t bssid[BSSID_LENGTH]; //this is hardware mac address of your AP
 	char ssid[SSID_MAX_LENGTH_WITH_NULL]; //this is the name of your AP as you see it when connecting
 	enum bss_status status;  //anything >=0 means that your are connected to this station/network
-	int8_t signal_dbm;  //signal strength in dBm from last received PPDU, you may need to average that
+	int8_t signal_dbm;  //signal strength in dBm from last received PPDU
+	int8_t signal_avg_dbm; //signal strength average in dBm
 	uint32_t rx_packets; //the number of received packets
 	uint32_t tx_packets; //the number of transmitted packets
 };
