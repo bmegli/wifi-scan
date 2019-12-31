@@ -324,7 +324,7 @@ static void init_netlink_socket(struct netlink_channel *channel)
 static int get_family_and_scan_ids(struct netlink_channel *channel)
 {
 	struct nlmsghdr *nlh=prepare_nl_message(GENL_ID_CTRL, NLM_F_REQUEST | NLM_F_ACK,  CTRL_CMD_GETFAMILY, channel);
-	mnl_attr_put_u32(nlh, CTRL_ATTR_FAMILY_ID, GENL_ID_CTRL);
+	mnl_attr_put_u16(nlh, CTRL_ATTR_FAMILY_ID, GENL_ID_CTRL);
 	mnl_attr_put_strz(nlh, CTRL_ATTR_FAMILY_NAME, NL80211_GENL_NAME);
 
 	send_nl_message(nlh, channel);
