@@ -12,8 +12,11 @@ Generally *nix platforms.
 
 ## Hardware
 
-Wireless devices that have cfg80211/mac80211 driver.
-Currently all new Linux wireless drivers should be written targeting either cfg80211 for fullmac devices or mac80211 for softmac devices.
+Wireless devices that have cfg80211/mac80211 driver (typically everything in use nowadays).
+
+From [wireless.wiki.kernel.org](https://wireless.wiki.kernel.org/en/developers/documentation/cfg80211):
+
+> All new Linux wireless drivers should be written targeting either cfg80211 for fullmac devices or mac80211 for softmac devices.
 
 ## State
 
@@ -157,3 +160,18 @@ cmake ..
 make
 ```
 
+### Used In
+
+Some notable uses found with google search:
+
+- NASA [ISAAC flight software WiFi driver](https://nasa.github.io/isaac/html/wifi_driver.html) adding functionality for Astrobee robot
+  - integrated as [code](https://github.com/nasa/isaac/blob/master/astrobee/hardware/wifi/include/wifi/wifi.h#L2)
+- [wlan_pioneer](https://github.com/fzirker/wlan_pioneer) WiFi availability mapping
+  - project for the lecture Autonomous Mobile Robots (AMR) at Mannheim University of Applied Sciences
+  - integrated as [library](https://github.com/fzirker/wlan_pioneer/blob/40dd0c40a8b9d9e6cb4f7a18f7097984bc66908f/CMakeLists.txt#L20)
+- [Analise de propagação de redes WLAN emambientes indoor](https://webcache.googleusercontent.com/search?q=cache:hKBojk-QcaoJ:https://wiki.sj.ifsc.edu.br/images/3/38/TCC290_Mateus_Araujo_Silva.pdf+&cd=18&hl=pl&ct=clnk&gl=pl&client=ubuntu)
+  - thesis at INSTITUTO FEDERAL DE SANTA CATARINA MATEUS ARAÚJO SILVA
+  - explicit mention in section 3.2.1 of code adaptation for thesis needs
+- [Wifi Scanner App for Linux](https://medium.com/thecodinghype/wifi-scanner-app-for-linux-in-c-using-qt-a742df766c05)
+  - integrated as [code](https://github.com/nlharri/WifiScannerLinux#L2)
+- ...
